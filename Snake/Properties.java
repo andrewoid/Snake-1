@@ -8,7 +8,7 @@ class Properties {
     // GameBoard.
     static final int BOARD_COLUMNS   = 40;
     static final int BOARD_ROWS      = 20;
-    static final int SQUARE_SIZE     = 30;
+    static final int SQUARE_SIZE     = 20;
 
     // Snake.
     static final int START_X         = BOARD_COLUMNS / 2;
