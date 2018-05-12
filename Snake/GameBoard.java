@@ -1,5 +1,11 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 /**
  * Represents the environment where the Snake moves a food spawns.
@@ -193,7 +199,7 @@ class GameBoard  {
 
         Graphics2D g = (Graphics2D) graphics;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
+        
         paintSnake(g);
         paintFood(g);
     }
@@ -203,13 +209,15 @@ class GameBoard  {
         int corner = Properties.SQUARE_SIZE / 3;
 
         for (Square sq : snake) {
-
+        	int headX = snake.getHead().getX()* Properties.SQUARE_SIZE+3;
+        	int headY = snake.getHead().getY()* Properties.SQUARE_SIZE+3;
             x = sq.getX() * Properties.SQUARE_SIZE;
             y = sq.getY() * Properties.SQUARE_SIZE;
 
             g.setColor(Properties.snakeColor);
             g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
                     Properties.SQUARE_SIZE - 2, corner, corner);
+            g.drawImage(paintHead(), headX, headY, null);
 
         }
     }
@@ -222,6 +230,16 @@ class GameBoard  {
         g.setColor(Properties.foodColor);
         g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
                 Properties.SQUARE_SIZE - 2, corner, corner);
+    }
+    
+    private BufferedImage paintHead() {
+    	BufferedImage eyes = null;   	     
+    	try {
+    		 eyes = ImageIO.read(new File("gifs/eyes.png"));			
+		}catch(IOException e) {
+			e.getMessage();			
+		}
+    	return eyes;
     }
 
     @Override
