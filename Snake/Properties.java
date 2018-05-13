@@ -82,33 +82,33 @@ class Properties {
         return theme;
     }
     
-    static void rainbow () {
+    static void useRainbowTheme () {
         Properties.backgroundColor = colors[0];
         Properties.theme = Properties.Theme.Rainbow;
     }
 
-    static void dark () {
+    static void useDarkTheme () {
         Properties.backgroundColor = new Color(53, 53, 53);
         Properties.snakeColor = new Color(0, 254, 254);
         Properties.foodColor = new Color(211, 87, 45);
         Properties.theme = Properties.Theme.Dark;
     }
 
-    static void sky () {
+    static void useSkyTheme () {
         Properties.backgroundColor = new Color(25, 181, 254);
         Properties.snakeColor = new Color(255, 255, 255);
         Properties.foodColor = new Color(0, 119, 192);
         Properties.theme = Properties.Theme.Sky;
     }
 
-    static void mud () {
+    static void useMudTheme () {
         Properties.backgroundColor = new Color(94, 44, 11);
         Properties.snakeColor = new Color(246, 196, 163);
         Properties.foodColor = new Color(211, 87, 45);
         Properties.theme = Properties.Theme.Mud;
     }
 
-    static void sand () {
+    static void useSandTheme () {
         Properties.backgroundColor = new Color(253, 227, 167);
         Properties.snakeColor = new Color(142, 68, 173);
         Properties.foodColor = new Color(243, 156, 18);

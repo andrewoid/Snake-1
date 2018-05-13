@@ -137,23 +137,23 @@ public class Window extends JFrame {
             }
 
             if (keyEvent.getKeyCode() == KeyEvent.VK_F1) {
-                Properties.dark();
+                Properties.useDarkTheme();
                 repaint();
             }
             else if (keyEvent.getKeyCode() == KeyEvent.VK_F2) {
-                Properties.sky();
+                Properties.useSkyTheme();
                 repaint();
             }
             else if (keyEvent.getKeyCode() == KeyEvent.VK_F3) {
-                Properties.mud();
+                Properties.useMudTheme();
                 repaint();
             }
             else if (keyEvent.getKeyCode() == KeyEvent.VK_F4) {
-                Properties.sand();
+                Properties.useSandTheme();
                 repaint();
             }
             else if (keyEvent.getKeyCode() == KeyEvent.VK_F5) {
-                Properties.rainbow();
+                Properties.useRainbowTheme();
                 repaint();
             }
         }
