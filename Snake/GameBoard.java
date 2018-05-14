@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
-import java.util.ArrayList;
 
 
 
@@ -29,7 +27,7 @@ class GameBoard  {
 	private BufferedImage right;
 	private BufferedImage up;
 	private BufferedImage down;
-	private String direction;
+	
 	
     /**
      * Keep track of the last move so that the Snake cannot do 180 degree turns,
@@ -136,7 +134,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        direction = "left";
         movement = Direction.LEFT;
     }
 
@@ -146,7 +143,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        direction = "right";
         movement = Direction.RIGHT;
     }
 
@@ -156,7 +152,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        direction = "up";
         movement = Direction.UP;
     }
 
@@ -166,7 +161,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        direction = "down";
         movement = Direction.DOWN;
     }
 
@@ -243,30 +237,29 @@ class GameBoard  {
     
     private void addEyeMovement() {
     	
-    		try {
-    			
-    			left = ImageIO.read(new File("gifs/eyes_left.png"));
-    			right = ImageIO.read(new File("gifs/eyes_blink.png"));
-    			up = ImageIO.read(new File("gifs/eyes_up.png"));
-    			down = ImageIO.read(new File("gifs/eyes_down.png"));    		
+    	try {    			
+    		left = ImageIO.read(new File("gifs/eyes_left.png"));
+    		right = ImageIO.read(new File("gifs/eyes_blink.png"));
+    		up = ImageIO.read(new File("gifs/eyes_up.png"));
+    		down = ImageIO.read(new File("gifs/eyes_down.png"));    		
 
-    		} catch (IOException e) {
+           } catch (IOException e) {
     			e.printStackTrace();
-    		}
+           }
     
     }
    
-    private BufferedImage changeDirection (String direction) {
-    	if (direction.equals("left")){
+    private BufferedImage changeDirection () {
+    	if (movement == Direction.LEFT){
     		return left;	
     	}
-    	if(direction.equals("right")) {
+    	if(movement == Direction.RIGHT) {
     		return right;
     	}
-    	if (direction.equals("up")) {
+    	if (movement == Direction.UP) {
     		return up;
     	}
-    	if (direction.equals("down")) {
+    	if (movement == Direction.DOWN) {
     		return down;
     	}
     	return up;
@@ -274,7 +267,7 @@ class GameBoard  {
     
     
     private void addEyes(Graphics2D g) {
-    	BufferedImage i = changeDirection(direction);
+    	BufferedImage i = changeDirection();
 		int x = snake.getHead().getX() * Properties.SQUARE_SIZE + 3;
 		int y = snake.getHead().getY() * Properties.SQUARE_SIZE + 3;
 		g.drawImage(i, x, y, null);
