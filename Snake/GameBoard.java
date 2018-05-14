@@ -1,5 +1,11 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 /**
  * Represents the environment where the Snake moves a food spawns.
@@ -14,7 +20,12 @@ class GameBoard  {
     private Square food;
     private Snake snake;
     private int score = 0;
-
+	private BufferedImage left;
+	private BufferedImage right;
+	private BufferedImage up;
+	private BufferedImage down;
+	private String direction;
+	
     /**
      * Keep track of the last move so that the Snake cannot do 180 degree turns,
      * only 90 degree turns.
@@ -27,6 +38,8 @@ class GameBoard  {
      */
     GameBoard () {
         this.snake = new Snake();
+    	addEyeMovement();
+
         newFood();
         update();
     }
@@ -36,6 +49,7 @@ class GameBoard  {
      */
     void update () {
         moveSnake();
+        
     }
 
     /**
@@ -61,6 +75,7 @@ class GameBoard  {
     void directionLeft () {
         if (lastMove != Direction.RIGHT || getSnakeSize() == 1) {
             movement = Direction.LEFT;
+            
         }
     }
 
@@ -79,6 +94,7 @@ class GameBoard  {
     void directionUp () {
         if (lastMove != Direction.DOWN || getSnakeSize() == 1) {
             movement = Direction.UP;
+            
         }
     }
 
@@ -115,6 +131,7 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
+        direction = "left";
         movement = Direction.LEFT;
     }
 
@@ -124,6 +141,7 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
+        direction = "right";
         movement = Direction.RIGHT;
     }
 
@@ -133,6 +151,7 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
+        direction = "up";
         movement = Direction.UP;
     }
 
@@ -142,6 +161,7 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
+        direction = "down";
         movement = Direction.DOWN;
     }
 
@@ -196,6 +216,8 @@ class GameBoard  {
 
         paintSnake(g);
         paintFood(g);
+		addEyes(g);
+
     }
 
     private void paintSnake (Graphics2D g) {
@@ -213,6 +235,47 @@ class GameBoard  {
 
         }
     }
+    
+    private void addEyeMovement() {
+    	
+    		try {
+    			
+    			left = ImageIO.read(new File("gifs/eyes_left.png"));
+    			right = ImageIO.read(new File("gifs/eyes_blink.png"));
+    			up = ImageIO.read(new File("gifs/eyes_up.png"));
+    			down = ImageIO.read(new File("gifs/eyes_down.png"));    		
+
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    
+    }
+   
+    private BufferedImage changeDirection (String direction) {
+    	if (direction.equals("left")){
+    		return left;	
+    	}
+    	if(direction.equals("right")) {
+    		return right;
+    	}
+    	if (direction.equals("up")) {
+    		return up;
+    	}
+    	if (direction.equals("down")) {
+    		return down;
+    	}
+    	return up;
+    }
+    
+    
+    private void addEyes(Graphics2D g) {
+    	BufferedImage i = changeDirection(direction);
+		int x = snake.getHead().getX() * Properties.SQUARE_SIZE + 3;
+		int y = snake.getHead().getY() * Properties.SQUARE_SIZE + 3;
+		g.drawImage(i, x, y, null);
+
+	
+	}
 
     private void paintFood (Graphics2D g) {
         int x = food.getX() * Properties.SQUARE_SIZE;
