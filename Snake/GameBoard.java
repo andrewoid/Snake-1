@@ -145,6 +145,7 @@ class GameBoard extends JFrame {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAtePoison();
 		movement = Direction.LEFT;
 	}
 
@@ -154,6 +155,7 @@ class GameBoard extends JFrame {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAtePoison();
 		movement = Direction.RIGHT;
 	}
 
@@ -163,6 +165,7 @@ class GameBoard extends JFrame {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAtePoison();
 		movement = Direction.UP;
 	}
 
@@ -172,6 +175,7 @@ class GameBoard extends JFrame {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAtePoison();
 		movement = Direction.DOWN;
 	}
 
@@ -194,6 +198,13 @@ class GameBoard extends JFrame {
 		if (isSnakeOnFood()) {
 			growSnake();
 			newFood();
+		}
+	}
+	
+	private void checkIfAtePoison() {
+		if(isSnakeOnPoison()) {
+			cutSnake();
+			newPoison();
 		}
 	}
 
