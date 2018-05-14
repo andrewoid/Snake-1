@@ -40,7 +40,7 @@ class Square {
 
     /**
      * Get what is on the Square.
-     * @return          the entity on the Square
+     * @return entity   the entity on the Square
      */
     Entity getEntity () {
         return entity;
@@ -76,6 +76,7 @@ class Square {
     enum Entity {
         Empty,
         Snake,
-        Food
+        Food,
+        Poison
     }
 }

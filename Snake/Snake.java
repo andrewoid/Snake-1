@@ -33,7 +33,7 @@ class Snake implements Iterable<Square> {
 
     /**
      * Get the size of the snake.
-     * @return          size of the snake
+     * @return size     size of the snake
      */
     int getSize () {
         return size;
@@ -144,6 +144,21 @@ class Snake implements Iterable<Square> {
      */
     public void grow (int x) {
         size += x;
+    }
+    
+    /**
+     * Cuts the snake by one tile.
+     */
+    void cutDown () {
+		size--;
+    }
+    
+    /**
+     * Cuts the snake a specified number of tiles.
+     * @param x		the number of tiles to cut the snake by
+     */
+    void cutDown (int x) {
+		size -= x;
     }
 
     public synchronized Iterator<Square> iterator () {
