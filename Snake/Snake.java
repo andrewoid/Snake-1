@@ -151,6 +151,9 @@ class Snake implements Iterable<Square> {
      */
     void cutDown () {
 		size--;
+		if(size > 0) {
+			snakeList.remove(snakeList.size() - 1);
+		}
     }
     
     /**
