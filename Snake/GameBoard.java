@@ -29,6 +29,7 @@ class GameBoard {
 	GameBoard() {
 		this.snake = new Snake();
 		newFood();
+		moreFood();
 		update();
 	}
 
@@ -40,20 +41,27 @@ class GameBoard {
 	}
 
 	/**
-	 * Creates food at a random location. Only one piece of food can be spawned at a
+	 * Creates food at a random location. Two pieces of food can be spawned at a
 	 * time.
 	 */
 	private void newFood() {
 		Random rX = new Random();
 		Random rY = new Random();
 		food = new Square(Square.Entity.Food, rX.nextInt(Properties.BOARD_COLUMNS), rY.nextInt(Properties.BOARD_ROWS));
-		moreFood = new Square(Square.Entity.Food, rX.nextInt(Properties.BOARD_COLUMNS),
-				rY.nextInt(Properties.BOARD_ROWS));
 
 		// If food is spawned inside the snake, try spawning it elsewhere.
 		if (snake.contains(food)) {
 			newFood();
 		}
+	}
+
+	private void moreFood() {
+		Random rX = new Random();
+		Random rY = new Random();
+		moreFood = new Square(Square.Entity.Food, rX.nextInt(Properties.BOARD_COLUMNS),
+				rY.nextInt(Properties.BOARD_ROWS));
+
+		// If food is spawned inside the snake, try spawning it elsewhere.
 
 		if (snake.contains(moreFood)) {
 			newFood();
@@ -120,6 +128,7 @@ class GameBoard {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAteMoreFood();
 		movement = Direction.LEFT;
 	}
 
@@ -129,6 +138,7 @@ class GameBoard {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAteMoreFood();
 		movement = Direction.RIGHT;
 	}
 
@@ -138,6 +148,7 @@ class GameBoard {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAteMoreFood();
 		movement = Direction.UP;
 	}
 
@@ -147,6 +158,7 @@ class GameBoard {
 		}
 		checkBounds();
 		checkIfAteFood();
+		checkIfAteMoreFood();
 		movement = Direction.DOWN;
 	}
 
@@ -172,6 +184,13 @@ class GameBoard {
 		}
 	}
 
+	private void checkIfAteMoreFood() {
+		if (isSnakeOnMoreFood()) {
+			growSnake();
+			moreFood();
+		}
+	}
+
 	private int getSnakeSize() {
 		return snake.getSize();
 	}
@@ -186,7 +205,11 @@ class GameBoard {
 	}
 
 	private boolean isSnakeOnFood() {
-		return snake.getHead().equals(food) || snake.getHead().equals(moreFood);
+		return snake.getHead().equals(food);
+	}
+
+	private boolean isSnakeOnMoreFood() {
+		return snake.getHead().equals(moreFood);
 	}
 
 	private void growSnake() {

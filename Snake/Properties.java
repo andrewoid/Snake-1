@@ -18,7 +18,7 @@ class Properties {
     static Color backgroundColor    = new Color(53, 53, 53);
     static Color snakeColor         = new Color(0, 255, 255);
     static Color foodColor          = new Color(211, 87, 45);
-    static Color food2Color          = new Color(0, 87, 45);
+    static Color food2Color          = new Color(87, 211, 45);
     
     // 7/27/2017
     // Add constant color changing background
