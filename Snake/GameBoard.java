@@ -1,4 +1,9 @@
-import java.awt.*;
+
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.ArrayList;
+import java.util.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,12 +24,15 @@ import javax.imageio.ImageIO;
  */
 
 class GameBoard  {
+	private static final Random RAND = new Random();
 
-    private Square food;
+    private List<Square> foodList;
+    private final int FOOD_QUANTITY = 2; 
     private Square poison;
     private Snake snake;
     private Square[] rocks = new Square[5];
     private int score = 0;
+
 	private BufferedImage left;
 	private BufferedImage right;
 	private BufferedImage up;
@@ -42,10 +50,12 @@ class GameBoard  {
      * Constructs the board.
      */
     GameBoard () {
-        this.snake = new Snake();
+		this.snake = new Snake();
+		foodList = new ArrayList<Square>();
+		for (int i = 0; i < FOOD_QUANTITY; i++) {
+			newFood();
+		}
     	addEyeMovement();
-
-        newFood();
         newPoison();
         createRocks();
         update();
@@ -63,32 +73,31 @@ class GameBoard  {
      * Creates food at a random location. Only one piece of food can be spawned at a time.
      */
     private void newFood () {
-        Random rX = new Random();
-        Random rY = new Random();
-        food = new Square(
-                Square.Entity.Food,
-                rX.nextInt(Properties.BOARD_COLUMNS),
-                rY.nextInt(Properties.BOARD_ROWS));
-
-        // If food is spawned inside the snake, try spawning it elsewhere.
-        if (snake.contains(food)) {
-            newFood();
-        }
+        	Square square = new Square(Square.Entity.Food,
+		RAND.nextInt(Properties.BOARD_COLUMNS),
+		RAND.nextInt(Properties.BOARD_ROWS));
+        
+        	if (snake.contains(square)) {
+    			newFood();
+    			return;
+    		}
+        
+		foodList.add(square);
     }
-    
 
 	/**
 	 * Creates poison at a random location. Only one piece of poison can be spawned at 
 	 * a time. 
 	 */
 	private void newPoison() {
-		Random rX = new Random();
-		Random rY = new Random();
-
-		poison = new Square(Square.Entity.Poison, rX.nextInt(Properties.BOARD_COLUMNS), rY.nextInt(Properties.BOARD_ROWS));
+	
+		poison = new Square(Square.Entity.Poison, 
+				RAND.nextInt(Properties.BOARD_COLUMNS), 
+				RAND.nextInt(Properties.BOARD_ROWS));
 		
 		//If poison is spawned inside the snake, inside the food or inside a rock try spawning elsewhere.
-		if (snake.contains(poison) || poison.equals(food) || poison.equals(rock)) {
+		// TODO: poison never .equals() rocks
+		if (snake.contains(poison) || foodList.contains(poison) || poison.equals(rocks)) {
 			newPoison();
 		}
 	}
@@ -103,7 +112,7 @@ class GameBoard  {
 			do {
 				rock = new Square(Square.Entity.Rock, rand.nextInt(Properties.BOARD_COLUMNS),
 						rand.nextInt(Properties.BOARD_ROWS));
-			} while (snake.contains(rock) || food.equals(rock));
+			} while (snake.contains(rock) || foodList.contains(rock));
 
 			rocks[i] = rock;
 		}
@@ -239,7 +248,7 @@ class GameBoard  {
 	}
 
     private void checkIfAteFood() {
-        if (isSnakeOnFood()) {
+        if (removeFoodIfEaten()) {
             growSnake();
             newFood();
         }
@@ -270,9 +279,17 @@ class GameBoard  {
         return score;
     }
 
-    private boolean isSnakeOnFood () {
-        return snake.getHead().equals(food);
-    }
+	private boolean removeFoodIfEaten() {
+		for (int i = 0; i < foodList.size(); i++){
+			Square food = foodList.get(i);
+			if ( snake.getHead().equals(food) ) {
+				foodList.remove(i);
+				return true;
+			}		
+		}
+		return false;
+	}
+    
 
     private boolean isSnakeOnPoison() {
 		return snake.getHead().equals(poison);
@@ -357,14 +374,17 @@ class GameBoard  {
 	}	
 
     private void paintFood (Graphics2D g) {
-        int x = food.getX() * Properties.SQUARE_SIZE;
-        int y = food.getY() * Properties.SQUARE_SIZE;
-        int corner = Properties.SQUARE_SIZE / 3;
-
-        g.setColor(Properties.foodColor);
-        g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
-                Properties.SQUARE_SIZE - 2, corner, corner);
-    }
+	    	for(Square food : foodList) {
+	        int x = food.getX() * Properties.SQUARE_SIZE;
+	        int y = food.getY() * Properties.SQUARE_SIZE;
+	        
+	        int corner = Properties.SQUARE_SIZE / 3;
+	
+	        g.setColor(Properties.foodColor);
+	        g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
+	                Properties.SQUARE_SIZE - 2, corner, corner);
+	    		}
+	    }
     
 	private void paintRocks(Graphics2D g) {
 		for (int i = 0; i < 5; i++) {
@@ -386,32 +406,4 @@ class GameBoard  {
 		g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
 	}
     
-	@Override
-	public String toString() {
-
-		StringBuilder sb = new StringBuilder();
-
-		for (int y = 0; y < Properties.BOARD_ROWS; y++) {
-			for (int x = 0; x < Properties.BOARD_COLUMNS; x++) {
-				Square sq = new Square(x, y);
-
-				if (snake.contains(sq)) {
-					sb.append("S");
-				} else if (food.equals(sq)) {
-					sb.append("F");
-				} else {
-					sb.append("-");
-				}
-
-				sb.append(" ");
-
-			}
-			sb.append("\n");
-		}
-
-		return new String(sb);
-	}
-
-   
-
 }
