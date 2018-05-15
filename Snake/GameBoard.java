@@ -250,7 +250,6 @@ class GameBoard {
 
 		g.setColor(Properties.foodColor);
 		g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
-		g.setColor(Properties.food2Color);
 		g.fillRoundRect(x2 + 1, y2 + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
 	}
 
