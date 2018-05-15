@@ -22,6 +22,7 @@ class GameBoard  {
 
     private Square food;
     private Snake snake;
+    private Square[] rock = new Square[5];
     private int score = 0;
 	private BufferedImage left;
 	private BufferedImage right;
@@ -44,6 +45,7 @@ class GameBoard  {
     	addEyeMovement();
 
         newFood();
+        createRocks();
         update();
     }
 
@@ -71,6 +73,22 @@ class GameBoard  {
             newFood();
         }
     }
+    
+    /**
+	 * Creates rocks at random locations.
+	 */
+	private void createRocks() {
+		Random rand = new Random();
+		Square sq;
+		for (int i = 0; i < 5; i++) {
+			do {
+				sq = new Square(Square.Entity.Rock, rand.nextInt(Properties.BOARD_COLUMNS),
+						rand.nextInt(Properties.BOARD_ROWS));
+			} while (snake.contains(sq));
+
+			rock[i] = sq;
+		}
+	}
 
     /**
      * Sets the direction of the Snake to go left.
@@ -133,6 +151,7 @@ class GameBoard  {
             exit();
         }
         checkBounds();
+        checkRock();
         checkIfAteFood();
         movement = Direction.LEFT;
     }
@@ -142,6 +161,7 @@ class GameBoard  {
             exit();
         }
         checkBounds();
+        checkRock();
         checkIfAteFood();
         movement = Direction.RIGHT;
     }
@@ -151,6 +171,7 @@ class GameBoard  {
             exit();
         }
         checkBounds();
+        checkRock();
         checkIfAteFood();
         movement = Direction.UP;
     }
@@ -160,6 +181,7 @@ class GameBoard  {
             exit();
         }
         checkBounds();
+        checkRock();
         checkIfAteFood();
         movement = Direction.DOWN;
     }
@@ -178,6 +200,19 @@ class GameBoard  {
             exit();
         }
     }
+    
+	private void checkRock() {
+		Square sq = snake.getHead();
+		boolean hitRock1 = sq.equals(rock[0]);
+		boolean hitRock2 = sq.equals(rock[1]);
+		boolean hitRock3 = sq.equals(rock[2]);
+		boolean hitRock4 = sq.equals(rock[3]);
+		boolean hitRock5 = sq.equals(rock[4]);
+
+		if (hitRock1 || hitRock2 || hitRock3 || hitRock4 || hitRock5) {
+			exit();
+		}
+	}
 
     private void checkIfAteFood() {
         if (isSnakeOnFood()) {
@@ -215,8 +250,8 @@ class GameBoard  {
 
         paintSnake(g);
         paintFood(g);
+        paintRocks(g);
 		addEyes(g);
-
     }
 
     private void paintSnake (Graphics2D g) {
@@ -284,6 +319,17 @@ class GameBoard  {
         g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
                 Properties.SQUARE_SIZE - 2, corner, corner);
     }
+    
+	private void paintRocks(Graphics2D g) {
+		for (int i = 0; i < 5; i++) {
+			int x = rock[i].getX() * Properties.SQUARE_SIZE;
+			int y = rock[i].getY() * Properties.SQUARE_SIZE;
+			int corner = Properties.SQUARE_SIZE / 3;
+
+			g.setColor(Properties.rockColor);
+			g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
+		}
+	}
 
 	@Override
 	public String toString() {
