@@ -21,6 +21,7 @@ import javax.imageio.ImageIO;
 class GameBoard  {
 
     private Square food;
+    private Square poison;
     private Snake snake;
     private Square[] rock = new Square[5];
     private int score = 0;
@@ -45,6 +46,7 @@ class GameBoard  {
     	addEyeMovement();
 
         newFood();
+        newPoison();
         createRocks();
         update();
     }
@@ -74,6 +76,23 @@ class GameBoard  {
         }
     }
     
+
+	/**
+	 * Creates poison at a random location. Only one piece of poison can be spawned at 
+	 * a time. 
+	 */
+	private void newPoison() {
+		Random rX = new Random();
+		Random rY = new Random();
+
+		poison = new Square(Square.Entity.Poison, rX.nextInt(Properties.BOARD_COLUMNS), rY.nextInt(Properties.BOARD_ROWS));
+		
+		//If poison is spawned inside the snake, inside the food or inside a rock try spawning elsewhere.
+		if (snake.contains(poison) || poison.equals(food) || poison.equals(rock)) {
+			newPoison();
+		}
+	}
+
     /**
 	 * Creates rocks at random locations.
 	 */
@@ -88,6 +107,7 @@ class GameBoard  {
 
 			rock[i] = sq;
 		}
+
 	}
 
     /**
@@ -153,6 +173,7 @@ class GameBoard  {
         checkBounds();
         checkRock();
         checkIfAteFood();
+        checkIfAtePoison();
         movement = Direction.LEFT;
     }
 
@@ -163,6 +184,7 @@ class GameBoard  {
         checkBounds();
         checkRock();
         checkIfAteFood();
+        checkIfAtePoison();
         movement = Direction.RIGHT;
     }
 
@@ -173,6 +195,7 @@ class GameBoard  {
         checkBounds();
         checkRock();
         checkIfAteFood();
+        checkIfAtePoison();
         movement = Direction.UP;
     }
 
@@ -183,6 +206,7 @@ class GameBoard  {
         checkBounds();
         checkRock();
         checkIfAteFood();
+        checkIfAtePoison();
         movement = Direction.DOWN;
     }
 
@@ -221,6 +245,18 @@ class GameBoard  {
         }
     }
 
+	private void checkIfAtePoison() {
+		if(isSnakeOnPoison()) {
+			cutSnake();
+			if(snake.getSize() == 0) {
+				exit();
+			}
+			else {
+				newPoison();
+			}
+		}
+	}
+    
     private int getSnakeSize () {
         return snake.getSize();
     }
@@ -238,10 +274,19 @@ class GameBoard  {
         return snake.getHead().equals(food);
     }
 
+    private boolean isSnakeOnPoison() {
+		return snake.getHead().equals(poison);
+	}
+    
     private void growSnake () {
         snake.grow();
         score += 10;
     }
+    
+	private void cutSnake() {
+		snake.cutDown();
+		score -= 10;
+	}
 
     void paint (Graphics graphics) {
 
@@ -250,6 +295,7 @@ class GameBoard  {
 
         paintSnake(g);
         paintFood(g);
+        paintPoison(g);
         paintRocks(g);
 		addEyes(g);
     }
@@ -330,7 +376,16 @@ class GameBoard  {
 			g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
 		}
 	}
+	
+	private void paintPoison(Graphics2D g) {
+		int x = poison.getX() * Properties.SQUARE_SIZE;
+		int y = poison.getY() * Properties.SQUARE_SIZE;
+		int corner = Properties.SQUARE_SIZE / 3;
 
+		g.setColor(Properties.poisonColor);
+		g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
+	}
+    
 	@Override
 	public String toString() {
 
