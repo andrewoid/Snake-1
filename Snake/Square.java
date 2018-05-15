@@ -77,6 +77,7 @@ class Square {
         Empty,
         Snake,
         Food,
-        Poison
+        Poison,
+        Rock
     }
 }
