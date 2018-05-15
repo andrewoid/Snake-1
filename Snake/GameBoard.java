@@ -22,7 +22,7 @@ class GameBoard  {
 
     private Square food;
     private Snake snake;
-    private Square[] rock = new Square[5];
+    private Square[] rocks = new Square[5];
     private int score = 0;
 	private BufferedImage left;
 	private BufferedImage right;
@@ -79,14 +79,14 @@ class GameBoard  {
 	 */
 	private void createRocks() {
 		Random rand = new Random();
-		Square sq;
+		Square rock;
 		for (int i = 0; i < 5; i++) {
 			do {
-				sq = new Square(Square.Entity.Rock, rand.nextInt(Properties.BOARD_COLUMNS),
+				rock = new Square(Square.Entity.Rock, rand.nextInt(Properties.BOARD_COLUMNS),
 						rand.nextInt(Properties.BOARD_ROWS));
-			} while (snake.contains(sq) || food.equals(sq));
+			} while (snake.contains(rock) || food.equals(rock));
 
-			rock[i] = sq;
+			rocks[i] = rock;
 		}
 	}
 
@@ -203,11 +203,11 @@ class GameBoard  {
     
 	private void checkRock() {
 		Square sq = snake.getHead();
-		boolean hitRock1 = sq.equals(rock[0]);
-		boolean hitRock2 = sq.equals(rock[1]);
-		boolean hitRock3 = sq.equals(rock[2]);
-		boolean hitRock4 = sq.equals(rock[3]);
-		boolean hitRock5 = sq.equals(rock[4]);
+		boolean hitRock1 = sq.equals(rocks[0]);
+		boolean hitRock2 = sq.equals(rocks[1]);
+		boolean hitRock3 = sq.equals(rocks[2]);
+		boolean hitRock4 = sq.equals(rocks[3]);
+		boolean hitRock5 = sq.equals(rocks[4]);
 
 		if (hitRock1 || hitRock2 || hitRock3 || hitRock4 || hitRock5) {
 			exit();
@@ -322,8 +322,8 @@ class GameBoard  {
     
 	private void paintRocks(Graphics2D g) {
 		for (int i = 0; i < 5; i++) {
-			int x = rock[i].getX() * Properties.SQUARE_SIZE;
-			int y = rock[i].getY() * Properties.SQUARE_SIZE;
+			int x = rocks[i].getX() * Properties.SQUARE_SIZE;
+			int y = rocks[i].getY() * Properties.SQUARE_SIZE;
 			int corner = Properties.SQUARE_SIZE / 3;
 
 			g.setColor(Properties.rockColor);
