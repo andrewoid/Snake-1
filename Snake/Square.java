@@ -1,6 +1,6 @@
 /**
  * Represents a square on the board. Each Square has an Entity. An Entity
- * is what is on the Square: either there is food, a piece of the snake, a rock,
+ * is what is on the Square: either there is food, a piece of the snake,
  * or it is empty.
  */
 class Square {
