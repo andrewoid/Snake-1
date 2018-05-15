@@ -249,7 +249,7 @@ class GameBoard  {
     
     }
    
-    private BufferedImage changeDirection () {
+    private BufferedImage getEyesImage () {
     	if (movement == Direction.LEFT){
     		return left;	
     	}
@@ -267,7 +267,7 @@ class GameBoard  {
     
     
     private void addEyes(Graphics2D g) {
-    	BufferedImage i = changeDirection();
+    	BufferedImage i = getEyesImage();
 		int x = snake.getHead().getX() * Properties.SQUARE_SIZE + 3;
 		int y = snake.getHead().getY() * Properties.SQUARE_SIZE + 3;
 		g.drawImage(i, x, y, null);
