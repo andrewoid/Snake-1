@@ -29,8 +29,9 @@ class GameBoard {
 	GameBoard() {
 		this.snake = new Snake();
 		newFood();
-		update();
 		createRocks();
+		update();
+
 	}
 
 	/**
@@ -56,8 +57,7 @@ class GameBoard {
 	}
 
 	/**
-	 * Creates rock at a random location. Only one piece of food can be spawned at a
-	 * time.
+	 * Creates rocks at random locations.
 	 */
 	private void createRocks() {
 		Random rand = new Random();
@@ -67,7 +67,7 @@ class GameBoard {
 				sq = new Square(Square.Entity.Rock, rand.nextInt(Properties.BOARD_COLUMNS),
 						rand.nextInt(Properties.BOARD_ROWS));
 			} while (snake.contains(sq));
-			
+
 			rock[i] = sq;
 		}
 	}
@@ -168,11 +168,11 @@ class GameBoard {
 
 	private void checkRock() {
 		Square sq = snake.getHead();
-		boolean hitRock1 = sq.getX() == rock[0].getX() && sq.getY() == rock[0].getY();
-		boolean hitRock2 = sq.getX() == rock[1].getX() && sq.getY() == rock[1].getY();
-		boolean hitRock3 = sq.getX() == rock[2].getX() && sq.getY() == rock[2].getY();
-		boolean hitRock4 = sq.getX() == rock[3].getX() && sq.getY() == rock[3].getY();
-		boolean hitRock5 = sq.getX() == rock[4].getX() && sq.getY() == rock[4].getY();
+		boolean hitRock1 = sq.equals(rock[0]);
+		boolean hitRock2 = sq.equals(rock[1]);
+		boolean hitRock3 = sq.equals(rock[2]);
+		boolean hitRock4 = sq.equals(rock[3]);
+		boolean hitRock5 = sq.equals(rock[4]);
 
 		if (hitRock1 || hitRock2 || hitRock3 || hitRock4 || hitRock5) {
 			exit();
