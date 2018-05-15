@@ -145,6 +145,16 @@ class Snake implements Iterable<Square> {
     public void grow (int x) {
         size += x;
     }
+    
+    /**
+     * Cuts the snake by one tile.
+     */
+    void cutDown () {
+		size--;
+		if(size >= 1) {
+			snakeList.remove(snakeList.size() - 1);
+		}
+    }
 
     public synchronized Iterator<Square> iterator () {
         return snakeList.iterator();

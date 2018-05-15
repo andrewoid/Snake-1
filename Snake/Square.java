@@ -76,6 +76,7 @@ class Square {
     enum Entity {
         Empty,
         Snake,
-        Food
+        Food,
+        Poison
     }
 }
