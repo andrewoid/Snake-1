@@ -84,10 +84,11 @@ class GameBoard  {
 	private void newPoison() {
 		Random rX = new Random();
 		Random rY = new Random();
+
 		poison = new Square(Square.Entity.Poison, rX.nextInt(Properties.BOARD_COLUMNS), rY.nextInt(Properties.BOARD_ROWS));
 		
-		//If poison is spawned inside the snake, try spawning elsewhere.
-		if (snake.contains(poison)) {
+		//If poison is spawned inside the snake, inside the food or inside a rock try spawning elsewhere.
+		if (snake.contains(poison) || poison.equals(food) || poison.equals(rock)) {
 			newPoison();
 		}
 	}
@@ -247,7 +248,12 @@ class GameBoard  {
 	private void checkIfAtePoison() {
 		if(isSnakeOnPoison()) {
 			cutSnake();
-			newPoison();
+			if(snake.getSize() == 0) {
+				exit();
+			}
+			else {
+				newPoison();
+			}
 		}
 	}
     
