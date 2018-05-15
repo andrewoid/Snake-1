@@ -1,5 +1,15 @@
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.WindowConstants;
+
 
 /**
  * Represents the environment where the Snake moves a food spawns.
@@ -9,7 +19,7 @@ import java.util.Random;
  * cannot move 180 degrees. Example: if the Snake is moving right, it cannot
  * immediately change its direction to left because it would run into itself.
  */
-class GameBoard  {
+class GameBoard extends JFrame {
 
     private Square food;
     private Snake snake;
@@ -171,10 +181,30 @@ class GameBoard  {
         return snake.getSize();
     }
 
-    private void exit () {
-        System.out.println("Final Score: " + getScore());
-        System.exit(0);
-    }
+	private void exit()	{
+		JDialog gameOver = new JDialog(this, "Game Over", true);
+		gameOver.setSize(150, 100);
+		gameOver.setLocationRelativeTo(null);
+		setDefaultCloseOperation(Window.EXIT_ON_CLOSE);
+
+		int score = getScore();
+		JLabel finalScore = new JLabel("Final score is: " + score);
+		gameOver.getContentPane().add(finalScore, BorderLayout.CENTER);
+		JButton closeButton = new JButton("OK");
+		
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gameOver.dispose();
+			}
+		});
+		
+		gameOver.getContentPane().add(closeButton, BorderLayout.SOUTH);
+		gameOver.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+		gameOver.setVisible(true);
+
+		System.exit(0);
+	}
 
     int getScore () {
         return score;
@@ -189,7 +219,7 @@ class GameBoard  {
         score += 10;
     }
 
-    void paint (Graphics graphics) {
+    public void paint (Graphics graphics) {
 
         Graphics2D g = (Graphics2D) graphics;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
