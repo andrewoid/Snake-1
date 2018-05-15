@@ -11,8 +11,8 @@ import java.util.Random;
  */
 class GameBoard  {
 
-    private Square food;
-    private Square moreFood;
+    private Square [] food;
+   // private Square moreFood;
     private Snake snake;
     private int score = 0;
 
@@ -29,7 +29,7 @@ class GameBoard  {
     GameBoard () {
         this.snake = new Snake();
         newFood();
-        moreFood();
+        //moreFood();
         update();
     }
 
@@ -46,29 +46,36 @@ class GameBoard  {
     private void newFood () {
         Random rX = new Random();
         Random rY = new Random();
-        food = new Square(
+        food = new Square[] {
+        		new Square (
                 Square.Entity.Food,
                 rX.nextInt(Properties.BOARD_COLUMNS),
-                rY.nextInt(Properties.BOARD_ROWS));
+                rY.nextInt(Properties.BOARD_ROWS)), 
+        		new Square(
+                        Square.Entity.Food,
+                        rX.nextInt(Properties.BOARD_COLUMNS),
+                        rY.nextInt(Properties.BOARD_ROWS))};
 
         // If food is spawned inside the snake, try spawning it elsewhere.
-        if (snake.contains(food)) {
-            newFood();
+        for(Square food : food) {
+        		if (snake.contains(food)) {
+        			newFood();
+        		}
         }
     }
     
-    private void moreFood() {
-    		Random rX = new Random();
-    		Random rY = new Random();
-    		moreFood = new Square(Square.Entity.Food, 
-    				rX.nextInt(Properties.BOARD_COLUMNS),
-    				rY.nextInt(Properties.BOARD_ROWS));
-    	
-    		// If food is spawned inside the snake, try spawning it elsewhere.
-    		if (snake.contains(moreFood)) {
-    			moreFood();
-    		}
-    	}
+//    private void moreFood() {
+//    		Random rX = new Random();
+//    		Random rY = new Random();
+//    		moreFood = new Square(Square.Entity.Food, 
+//    				rX.nextInt(Properties.BOARD_COLUMNS),
+//    				rY.nextInt(Properties.BOARD_ROWS));
+//    	
+//    		// If food is spawned inside the snake, try spawning it elsewhere.
+//    		if (snake.contains(moreFood)) {
+//    			moreFood();
+//    		}
+//    	}
     
     /**
      * Sets the direction of the Snake to go left.
@@ -130,7 +137,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        checkIfAteMoreFood();
         movement = Direction.LEFT;
     }
 
@@ -140,7 +146,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        checkIfAteMoreFood();
         movement = Direction.RIGHT;
     }
 
@@ -150,7 +155,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        checkIfAteMoreFood();
         movement = Direction.UP;
     }
 
@@ -160,7 +164,6 @@ class GameBoard  {
         }
         checkBounds();
         checkIfAteFood();
-        checkIfAteMoreFood();
         movement = Direction.DOWN;
     }
 
@@ -186,12 +189,12 @@ class GameBoard  {
         }
     }
     
-    private void checkIfAteMoreFood() {
-    		if (isSnakeOnMoreFood()) {
-    			growSnake();
-    			moreFood();
-    		}
-    	}
+//    private void checkIfAteMoreFood() {
+//    		if (isSnakeOnMoreFood()) {
+//    			growSnake();
+//    			moreFood();
+//    		}
+//    	}
 
     private int getSnakeSize () {
         return snake.getSize();
@@ -206,13 +209,15 @@ class GameBoard  {
         return score;
     }
 
-    private boolean isSnakeOnFood () {
-        return snake.getHead().equals(food);
-    }
+	private boolean isSnakeOnFood() {
+		for (Square food : food) {
+			if ( snake.getHead().equals(food) ) {
+				return true;
+			}		
+		}
+		return false;
+	}
     
-    private boolean isSnakeOnMoreFood() {
-    		return snake.getHead().equals(moreFood);
-    	}
 
     private void growSnake () {
         snake.grow();
@@ -245,17 +250,16 @@ class GameBoard  {
     }
 
     private void paintFood (Graphics2D g) {
+    	for(Square food : food) {
         int x = food.getX() * Properties.SQUARE_SIZE;
         int y = food.getY() * Properties.SQUARE_SIZE;
-        int x2 = moreFood.getX() * Properties.SQUARE_SIZE;
-        int y2 = moreFood.getY() * Properties.SQUARE_SIZE;
+        
         int corner = Properties.SQUARE_SIZE / 3;
 
         g.setColor(Properties.foodColor);
         g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
                 Properties.SQUARE_SIZE - 2, corner, corner);
-        g.fillRoundRect(x2 + 1, y2 + 1, Properties.SQUARE_SIZE - 2,
-        			Properties.SQUARE_SIZE - 2, corner, corner);
+    		}
     }
 
     @Override
