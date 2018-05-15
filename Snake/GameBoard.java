@@ -2,252 +2,281 @@ import java.awt.*;
 import java.util.Random;
 
 /**
- * Represents the environment where the Snake moves a food spawns.
- * <br/>
- * There are some special rules as to how the Snake can move. If the Snake's size
- * is 1, it can move in any direction. If the Snake's size is greater than 1, it
- * cannot move 180 degrees. Example: if the Snake is moving right, it cannot
- * immediately change its direction to left because it would run into itself.
+ * Represents the environment where the Snake moves a food spawns. <br/>
+ * There are some special rules as to how the Snake can move. If the Snake's
+ * size is 1, it can move in any direction. If the Snake's size is greater than
+ * 1, it cannot move 180 degrees. Example: if the Snake is moving right, it
+ * cannot immediately change its direction to left because it would run into
+ * itself.
  */
-class GameBoard  {
+class GameBoard {
 
-    private Square food;
-    private Snake snake;
-    private int score = 0;
+	private Square food;
+	private Square moreFood;
+	private Snake snake;
+	private int score = 0;
 
-    /**
-     * Keep track of the last move so that the Snake cannot do 180 degree turns,
-     * only 90 degree turns.
-     */
-    private Direction movement = Direction.DOWN;
-    private Direction lastMove = movement;
+	/**
+	 * Keep track of the last move so that the Snake cannot do 180 degree turns,
+	 * only 90 degree turns.
+	 */
+	private Direction movement = Direction.DOWN;
+	private Direction lastMove = movement;
 
-    /**
-     * Constructs the board.
-     */
-    GameBoard () {
-        this.snake = new Snake();
-        newFood();
-        update();
-    }
+	/**
+	 * Constructs the board.
+	 */
+	GameBoard() {
+		this.snake = new Snake();
+		newFood();
+		moreFood();
+		update();
+	}
 
-    /**
-     * Move the Snake.
-     */
-    void update () {
-        moveSnake();
-    }
+	/**
+	 * Move the Snake.
+	 */
+	void update() {
+		moveSnake();
+	}
 
-    /**
-     * Creates food at a random location. Only one piece of food can be spawned at a time.
-     */
-    private void newFood () {
-        Random rX = new Random();
-        Random rY = new Random();
-        food = new Square(
-                Square.Entity.Food,
-                rX.nextInt(Properties.BOARD_COLUMNS),
-                rY.nextInt(Properties.BOARD_ROWS));
+	/**
+	 * Creates food at a random location. Two pieces of food can be spawned at a
+	 * time.
+	 */
+	private void newFood() {
+		Random rX = new Random();
+		Random rY = new Random();
+		food = new Square(Square.Entity.Food, rX.nextInt(Properties.BOARD_COLUMNS), rY.nextInt(Properties.BOARD_ROWS));
 
-        // If food is spawned inside the snake, try spawning it elsewhere.
-        if (snake.contains(food)) {
-            newFood();
-        }
-    }
+		// If food is spawned inside the snake, try spawning it elsewhere.
+		if (snake.contains(food)) {
+			newFood();
+		}
+	}
 
-    /**
-     * Sets the direction of the Snake to go left.
-     */
-    void directionLeft () {
-        if (lastMove != Direction.RIGHT || getSnakeSize() == 1) {
-            movement = Direction.LEFT;
-        }
-    }
+	private void moreFood() {
+		Random rX = new Random();
+		Random rY = new Random();
+		moreFood = new Square(Square.Entity.Food, rX.nextInt(Properties.BOARD_COLUMNS),
+				rY.nextInt(Properties.BOARD_ROWS));
 
-    /**
-     * Sets the direction of the Snake to go right.
-     */
-    void directionRight () {
-        if (lastMove != Direction.LEFT || getSnakeSize() == 1) {
-            movement = Direction.RIGHT;
-        }
-    }
+		// If food is spawned inside the snake, try spawning it elsewhere.
 
-    /**
-     * Sets the direction of the Snake to go up.
-     */
-    void directionUp () {
-        if (lastMove != Direction.DOWN || getSnakeSize() == 1) {
-            movement = Direction.UP;
-        }
-    }
+		if (snake.contains(moreFood)) {
+			newFood();
+		}
+	}
 
-    /**
-     * Sets the direction of the Snake to go down.
-     */
-    void directionDown () {
-        if (lastMove != Direction.UP || getSnakeSize() == 1) {
-            movement = Direction.DOWN;
-        }
-    }
+	/**
+	 * Sets the direction of the Snake to go left.
+	 */
+	void directionLeft() {
+		if (lastMove != Direction.RIGHT || getSnakeSize() == 1) {
+			movement = Direction.LEFT;
+		}
+	}
 
-    /**
-     * Moves the Snake one square, according to its direction.
-     */
-    private void moveSnake () {
+	/**
+	 * Sets the direction of the Snake to go right.
+	 */
+	void directionRight() {
+		if (lastMove != Direction.LEFT || getSnakeSize() == 1) {
+			movement = Direction.RIGHT;
+		}
+	}
 
-        if (movement == Direction.LEFT) {
-            moveSnakeLeft();
-        } else if (movement == Direction.RIGHT) {
-            moveSnakeRight();
-        } else if (movement == Direction.UP) {
-            moveSnakeUp();
-        } else if (movement == Direction.DOWN) {
-            moveSnakeDown();
-        }
+	/**
+	 * Sets the direction of the Snake to go up.
+	 */
+	void directionUp() {
+		if (lastMove != Direction.DOWN || getSnakeSize() == 1) {
+			movement = Direction.UP;
+		}
+	}
 
-        lastMove = movement;
-    }
+	/**
+	 * Sets the direction of the Snake to go down.
+	 */
+	void directionDown() {
+		if (lastMove != Direction.UP || getSnakeSize() == 1) {
+			movement = Direction.DOWN;
+		}
+	}
 
-    private void moveSnakeLeft () {
-        if (!snake.moveLeft()) { // Check to see if the Snake has run into itself.
-            exit();
-        }
-        checkBounds();
-        checkIfAteFood();
-        movement = Direction.LEFT;
-    }
+	/**
+	 * Moves the Snake one square, according to its direction.
+	 */
+	private void moveSnake() {
 
-    private void moveSnakeRight () {
-        if (!snake.moveRight()) { // Check to see if the Snake has run into itself.
-            exit();
-        }
-        checkBounds();
-        checkIfAteFood();
-        movement = Direction.RIGHT;
-    }
+		if (movement == Direction.LEFT) {
+			moveSnakeLeft();
+		} else if (movement == Direction.RIGHT) {
+			moveSnakeRight();
+		} else if (movement == Direction.UP) {
+			moveSnakeUp();
+		} else if (movement == Direction.DOWN) {
+			moveSnakeDown();
+		}
 
-    private void moveSnakeUp () {
-        if (!snake.moveUp()) { // Check to see if the Snake has run into itself.
-            exit();
-        }
-        checkBounds();
-        checkIfAteFood();
-        movement = Direction.UP;
-    }
+		lastMove = movement;
+	}
 
-    private void moveSnakeDown () {
-        if (!snake.moveDown()) { // Check to see if the Snake has run into itself.
-            exit();
-        }
-        checkBounds();
-        checkIfAteFood();
-        movement = Direction.DOWN;
-    }
+	private void moveSnakeLeft() {
+		if (!snake.moveLeft()) { // Check to see if the Snake has run into itself.
+			exit();
+		}
+		checkBounds();
+		checkIfAteFood();
+		checkIfAteMoreFood();
+		movement = Direction.LEFT;
+	}
 
-    private void checkBounds () {
-        Square sq = snake.getHead();
+	private void moveSnakeRight() {
+		if (!snake.moveRight()) { // Check to see if the Snake has run into itself.
+			exit();
+		}
+		checkBounds();
+		checkIfAteFood();
+		checkIfAteMoreFood();
+		movement = Direction.RIGHT;
+	}
 
-        boolean tooFarLeft = sq.getX() < 0;
-        boolean tooFarRight = sq.getX() >= Properties.BOARD_COLUMNS;
-        boolean tooFarUp = sq.getY() < 0;
-        boolean tooFarDown = sq.getY() >= Properties.BOARD_ROWS;
+	private void moveSnakeUp() {
+		if (!snake.moveUp()) { // Check to see if the Snake has run into itself.
+			exit();
+		}
+		checkBounds();
+		checkIfAteFood();
+		checkIfAteMoreFood();
+		movement = Direction.UP;
+	}
 
-        boolean outOfBounds = tooFarLeft || tooFarRight || tooFarUp || tooFarDown;
+	private void moveSnakeDown() {
+		if (!snake.moveDown()) { // Check to see if the Snake has run into itself.
+			exit();
+		}
+		checkBounds();
+		checkIfAteFood();
+		checkIfAteMoreFood();
+		movement = Direction.DOWN;
+	}
 
-        if (outOfBounds) {
-            exit();
-        }
-    }
+	private void checkBounds() {
+		Square sq = snake.getHead();
 
-    private void checkIfAteFood() {
-        if (isSnakeOnFood()) {
-            growSnake();
-            newFood();
-        }
-    }
+		boolean tooFarLeft = sq.getX() < 0;
+		boolean tooFarRight = sq.getX() >= Properties.BOARD_COLUMNS;
+		boolean tooFarUp = sq.getY() < 0;
+		boolean tooFarDown = sq.getY() >= Properties.BOARD_ROWS;
 
-    private int getSnakeSize () {
-        return snake.getSize();
-    }
+		boolean outOfBounds = tooFarLeft || tooFarRight || tooFarUp || tooFarDown;
 
-    private void exit () {
-        System.out.println("Final Score: " + getScore());
-        System.exit(0);
-    }
+		if (outOfBounds) {
+			exit();
+		}
+	}
 
-    int getScore () {
-        return score;
-    }
+	private void checkIfAteFood() {
+		if (isSnakeOnFood()) {
+			growSnake();
+			newFood();
+		}
+	}
 
-    private boolean isSnakeOnFood () {
-        return snake.getHead().equals(food);
-    }
+	private void checkIfAteMoreFood() {
+		if (isSnakeOnMoreFood()) {
+			growSnake();
+			moreFood();
+		}
+	}
 
-    private void growSnake () {
-        snake.grow();
-        score += 10;
-    }
+	private int getSnakeSize() {
+		return snake.getSize();
+	}
 
-    void paint (Graphics graphics) {
+	private void exit() {
+		System.out.println("Final Score: " + getScore());
+		System.exit(0);
+	}
 
-        Graphics2D g = (Graphics2D) graphics;
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	int getScore() {
+		return score;
+	}
 
-        paintSnake(g);
-        paintFood(g);
-    }
+	private boolean isSnakeOnFood() {
+		return snake.getHead().equals(food);
+	}
 
-    private void paintSnake (Graphics2D g) {
-        int x, y;
-        int corner = Properties.SQUARE_SIZE / 3;
+	private boolean isSnakeOnMoreFood() {
+		return snake.getHead().equals(moreFood);
+	}
 
-        for (Square sq : snake) {
+	private void growSnake() {
+		snake.grow();
+		score += 10;
+	}
 
-            x = sq.getX() * Properties.SQUARE_SIZE;
-            y = sq.getY() * Properties.SQUARE_SIZE;
+	void paint(Graphics graphics) {
 
-            g.setColor(Properties.snakeColor);
-            g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
-                    Properties.SQUARE_SIZE - 2, corner, corner);
+		Graphics2D g = (Graphics2D) graphics;
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        }
-    }
+		paintSnake(g);
+		paintFood(g);
+	}
 
-    private void paintFood (Graphics2D g) {
-        int x = food.getX() * Properties.SQUARE_SIZE;
-        int y = food.getY() * Properties.SQUARE_SIZE;
-        int corner = Properties.SQUARE_SIZE / 3;
+	private void paintSnake(Graphics2D g) {
+		int x, y;
+		int corner = Properties.SQUARE_SIZE / 3;
 
-        g.setColor(Properties.foodColor);
-        g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2,
-                Properties.SQUARE_SIZE - 2, corner, corner);
-    }
+		for (Square sq : snake) {
 
-    @Override
-    public String toString () {
+			x = sq.getX() * Properties.SQUARE_SIZE;
+			y = sq.getY() * Properties.SQUARE_SIZE;
 
-        StringBuilder sb = new StringBuilder();
+			g.setColor(Properties.snakeColor);
+			g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
 
-        for (int y = 0; y < Properties.BOARD_ROWS; y++) {
-            for (int x = 0; x < Properties.BOARD_COLUMNS; x++) {
-                Square sq = new Square(x, y);
+		}
+	}
 
-                if (snake.contains(sq)) {
-                    sb.append("S");
-                } else if (food.equals(sq)) {
-                    sb.append("F");
-                } else {
-                    sb.append("-");
-                }
+	private void paintFood(Graphics2D g) {
+		int x = food.getX() * Properties.SQUARE_SIZE;
+		int y = food.getY() * Properties.SQUARE_SIZE;
+		int x2 = moreFood.getX() * Properties.SQUARE_SIZE;
+		int y2 = moreFood.getY() * Properties.SQUARE_SIZE;
+		int corner = Properties.SQUARE_SIZE / 3;
 
-                sb.append(" ");
+		g.setColor(Properties.foodColor);
+		g.fillRoundRect(x + 1, y + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
+		g.fillRoundRect(x2 + 1, y2 + 1, Properties.SQUARE_SIZE - 2, Properties.SQUARE_SIZE - 2, corner, corner);
+	}
 
-            }
-            sb.append("\n");
-        }
+	@Override
+	public String toString() {
 
-        return new String(sb);
-    }
+		StringBuilder sb = new StringBuilder();
+
+		for (int y = 0; y < Properties.BOARD_ROWS; y++) {
+			for (int x = 0; x < Properties.BOARD_COLUMNS; x++) {
+				Square sq = new Square(x, y);
+
+				if (snake.contains(sq)) {
+					sb.append("S");
+				} else if (food.equals(sq)) {
+					sb.append("F");
+				} else {
+					sb.append("-");
+				}
+
+				sb.append(" ");
+
+			}
+			sb.append("\n");
+		}
+
+		return new String(sb);
+	}
 
 }
