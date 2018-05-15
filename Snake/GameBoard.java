@@ -1,14 +1,6 @@
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Random;
-
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.WindowConstants;
 
 
 /**
@@ -19,10 +11,11 @@ import javax.swing.WindowConstants;
  * cannot move 180 degrees. Example: if the Snake is moving right, it cannot
  * immediately change its direction to left because it would run into itself.
  */
-class GameBoard extends JFrame {
+class GameBoard {
 
     private Square food;
     private Snake snake;
+    private Window window;
     private int score = 0;
 
     /**
@@ -35,10 +28,11 @@ class GameBoard extends JFrame {
     /**
      * Constructs the board.
      */
-    GameBoard () {
+    GameBoard (Window window) {
         this.snake = new Snake();
         newFood();
         update();
+        this.window = window;
     }
 
     /**
@@ -121,7 +115,7 @@ class GameBoard extends JFrame {
 
     private void moveSnakeLeft () {
         if (!snake.moveLeft()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkIfAteFood();
@@ -130,7 +124,7 @@ class GameBoard extends JFrame {
 
     private void moveSnakeRight () {
         if (!snake.moveRight()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkIfAteFood();
@@ -139,7 +133,7 @@ class GameBoard extends JFrame {
 
     private void moveSnakeUp () {
         if (!snake.moveUp()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkIfAteFood();
@@ -148,7 +142,7 @@ class GameBoard extends JFrame {
 
     private void moveSnakeDown () {
         if (!snake.moveDown()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkIfAteFood();
@@ -166,7 +160,7 @@ class GameBoard extends JFrame {
         boolean outOfBounds = tooFarLeft || tooFarRight || tooFarUp || tooFarDown;
 
         if (outOfBounds) {
-            exit();
+        	window.gameOverDialog();
         }
     }
 
@@ -180,31 +174,6 @@ class GameBoard extends JFrame {
     private int getSnakeSize () {
         return snake.getSize();
     }
-
-	private void exit()	{
-		JDialog gameOver = new JDialog(this, "Game Over", true);
-		gameOver.setSize(150, 100);
-		gameOver.setLocationRelativeTo(null);
-		setDefaultCloseOperation(Window.EXIT_ON_CLOSE);
-
-		int score = getScore();
-		JLabel finalScore = new JLabel("Final score is: " + score);
-		gameOver.getContentPane().add(finalScore, BorderLayout.CENTER);
-		JButton closeButton = new JButton("OK");
-		
-		closeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				gameOver.dispose();
-			}
-		});
-		
-		gameOver.getContentPane().add(closeButton, BorderLayout.SOUTH);
-		gameOver.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-
-		gameOver.setVisible(true);
-
-		System.exit(0);
-	}
 
     int getScore () {
         return score;

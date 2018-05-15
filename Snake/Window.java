@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -11,6 +13,7 @@ import java.awt.event.KeyEvent;
 public class Window extends JFrame {
 
     private Engine engine;
+    private GameBoard gameBoard = new GameBoard(this);
 
     private Window() {
         engine = createEngine();
@@ -20,7 +23,6 @@ public class Window extends JFrame {
     private Engine createEngine () {
 
         Container cp = getContentPane();
-        GameBoard gameBoard = new GameBoard();
         Engine engine = new Engine(gameBoard);
 
         int canvasWidth = Properties.SQUARE_SIZE * Properties.BOARD_COLUMNS;
@@ -158,6 +160,31 @@ public class Window extends JFrame {
             }
         }
 
+    }
+    
+    public void gameOverDialog() {
+    	JDialog gameOver = new JDialog(this, "Game Over", true);
+		gameOver.setSize(150, 100);
+		gameOver.setLocationRelativeTo(null);
+		setDefaultCloseOperation(Window.EXIT_ON_CLOSE);
+
+		String score = String.valueOf(gameBoard.getScore());
+		JLabel finalScoreLabel = new JLabel("Final score is: " + score);
+		gameOver.getContentPane().add(finalScoreLabel, BorderLayout.CENTER);
+		JButton closeButton = new JButton("OK");
+		
+		closeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				gameOver.dispose();
+			}
+		});
+		
+		gameOver.getContentPane().add(closeButton, BorderLayout.SOUTH);
+		gameOver.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+
+		gameOver.setVisible(true);
+		
+		System.exit(0);
     }
 
     public static void main(String[] args) {
