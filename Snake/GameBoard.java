@@ -84,7 +84,7 @@ class GameBoard  {
 			do {
 				sq = new Square(Square.Entity.Rock, rand.nextInt(Properties.BOARD_COLUMNS),
 						rand.nextInt(Properties.BOARD_ROWS));
-			} while (snake.contains(sq));
+			} while (snake.contains(sq) || food.equals(sq));
 
 			rock[i] = sq;
 		}
