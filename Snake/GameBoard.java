@@ -1,21 +1,35 @@
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Random;
 
+import javax.imageio.ImageIO;
+
+
+
+
 /**
- * Represents the environment where the Snake moves a food spawns.
- * <br/>
- * There are some special rules as to how the Snake can move. If the Snake's size
- * is 1, it can move in any direction. If the Snake's size is greater than 1, it
- * cannot move 180 degrees. Example: if the Snake is moving right, it cannot
- * immediately change its direction to left because it would run into itself.
+ * Represents the environment where the Snake moves a food spawns. <br/>
+ * There are some special rules as to how the Snake can move. If the Snake's
+ * size is 1, it can move in any direction. If the Snake's size is greater than
+ * 1, it cannot move 180 degrees. Example: if the Snake is moving right, it
+ * cannot immediately change its direction to left because it would run into
+ * itself.
  */
+
 class GameBoard  {
 
     private Square food;
     private Snake snake;
     private Square[] rock = new Square[5];
     private int score = 0;
-
+	private BufferedImage left;
+	private BufferedImage right;
+	private BufferedImage up;
+	private BufferedImage down;
+	
+	
     /**
      * Keep track of the last move so that the Snake cannot do 180 degree turns,
      * only 90 degree turns.
@@ -28,6 +42,8 @@ class GameBoard  {
      */
     GameBoard () {
         this.snake = new Snake();
+    	addEyeMovement();
+
         newFood();
         createRocks();
         update();
@@ -38,6 +54,7 @@ class GameBoard  {
      */
     void update () {
         moveSnake();
+        
     }
 
     /**
@@ -79,6 +96,7 @@ class GameBoard  {
     void directionLeft () {
         if (lastMove != Direction.RIGHT || getSnakeSize() == 1) {
             movement = Direction.LEFT;
+            
         }
     }
 
@@ -97,6 +115,7 @@ class GameBoard  {
     void directionUp () {
         if (lastMove != Direction.DOWN || getSnakeSize() == 1) {
             movement = Direction.UP;
+            
         }
     }
 
@@ -232,6 +251,7 @@ class GameBoard  {
         paintSnake(g);
         paintFood(g);
         paintRocks(g);
+		addEyes(g);
     }
 
     private void paintSnake (Graphics2D g) {
@@ -249,6 +269,46 @@ class GameBoard  {
 
         }
     }
+    
+    private void addEyeMovement() {
+    	
+    	try {    			
+    		left = ImageIO.read(new File("gifs/eyes_left.png"));
+    		right = ImageIO.read(new File("gifs/eyes_blink.png"));
+    		up = ImageIO.read(new File("gifs/eyes_up.png"));
+    		down = ImageIO.read(new File("gifs/eyes_down.png"));    		
+
+           } catch (IOException e) {
+    			e.printStackTrace();
+           }
+    
+    }
+   
+    private BufferedImage getEyesImage () {
+    	if (movement == Direction.LEFT){
+    		return left;	
+    	}
+    	if(movement == Direction.RIGHT) {
+    		return right;
+    	}
+    	if (movement == Direction.UP) {
+    		return up;
+    	}
+    	if (movement == Direction.DOWN) {
+    		return down;
+    	}
+    	return up;
+    }
+    
+    
+    private void addEyes(Graphics2D g) {
+    	BufferedImage i = getEyesImage();
+		int x = snake.getHead().getX() * Properties.SQUARE_SIZE + 3;
+		int y = snake.getHead().getY() * Properties.SQUARE_SIZE + 3;
+		g.drawImage(i, x, y, null);
+
+	
+	}	
 
     private void paintFood (Graphics2D g) {
         int x = food.getX() * Properties.SQUARE_SIZE;
@@ -271,30 +331,32 @@ class GameBoard  {
 		}
 	}
 
-    @Override
-    public String toString () {
+	@Override
+	public String toString() {
 
-        StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
-        for (int y = 0; y < Properties.BOARD_ROWS; y++) {
-            for (int x = 0; x < Properties.BOARD_COLUMNS; x++) {
-                Square sq = new Square(x, y);
+		for (int y = 0; y < Properties.BOARD_ROWS; y++) {
+			for (int x = 0; x < Properties.BOARD_COLUMNS; x++) {
+				Square sq = new Square(x, y);
 
-                if (snake.contains(sq)) {
-                    sb.append("S");
-                } else if (food.equals(sq)) {
-                    sb.append("F");
-                } else {
-                    sb.append("-");
-                }
+				if (snake.contains(sq)) {
+					sb.append("S");
+				} else if (food.equals(sq)) {
+					sb.append("F");
+				} else {
+					sb.append("-");
+				}
 
-                sb.append(" ");
+				sb.append(" ");
 
-            }
-            sb.append("\n");
-        }
+			}
+			sb.append("\n");
+		}
 
-        return new String(sb);
-    }
+		return new String(sb);
+	}
+
+   
 
 }
