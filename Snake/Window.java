@@ -179,7 +179,7 @@ public class Window extends JFrame {
 			}
 		});
 		
-		gameOver.getContentPane().add(closeButton, BorderLayout.NORTH);
+		gameOver.getContentPane().add(closeButton, BorderLayout.SOUTH);
 		gameOver.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
 		gameOver.setVisible(true);
