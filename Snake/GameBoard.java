@@ -1,4 +1,3 @@
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -22,14 +21,13 @@ import javax.imageio.ImageIO;
  * cannot immediately change its direction to left because it would run into
  * itself.
  */
-
-class GameBoard  {
+class GameBoard {
 	private static final Random RAND = new Random();
-
     private List<Square> foodList;
     private final int FOOD_QUANTITY = 2; 
     private Square poison;
     private Snake snake;
+    private Window window;
     private Square[] rocks = new Square[5];
     private int score = 0;
 
@@ -49,8 +47,8 @@ class GameBoard  {
     /**
      * Constructs the board.
      */
-    GameBoard () {
-		this.snake = new Snake();
+    GameBoard (Window window) {
+        this.snake = new Snake();
 		foodList = new ArrayList<Square>();
 		for (int i = 0; i < FOOD_QUANTITY; i++) {
 			newFood();
@@ -59,6 +57,7 @@ class GameBoard  {
         newPoison();
         createRocks();
         update();
+        this.window = window;
     }
 
     /**
@@ -177,7 +176,7 @@ class GameBoard  {
 
     private void moveSnakeLeft () {
         if (!snake.moveLeft()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkRock();
@@ -188,7 +187,7 @@ class GameBoard  {
 
     private void moveSnakeRight () {
         if (!snake.moveRight()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkRock();
@@ -199,7 +198,7 @@ class GameBoard  {
 
     private void moveSnakeUp () {
         if (!snake.moveUp()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkRock();
@@ -210,7 +209,7 @@ class GameBoard  {
 
     private void moveSnakeDown () {
         if (!snake.moveDown()) { // Check to see if the Snake has run into itself.
-            exit();
+        	window.gameOverDialog();
         }
         checkBounds();
         checkRock();
@@ -230,7 +229,7 @@ class GameBoard  {
         boolean outOfBounds = tooFarLeft || tooFarRight || tooFarUp || tooFarDown;
 
         if (outOfBounds) {
-            exit();
+        	window.gameOverDialog();
         }
     }
     
@@ -243,7 +242,7 @@ class GameBoard  {
 		boolean hitRock5 = sq.equals(rocks[4]);
 
 		if (hitRock1 || hitRock2 || hitRock3 || hitRock4 || hitRock5) {
-			exit();
+			window.gameOverDialog();
 		}
 	}
 
@@ -258,7 +257,7 @@ class GameBoard  {
 		if(isSnakeOnPoison()) {
 			cutSnake();
 			if(snake.getSize() == 0) {
-				exit();
+				window.gameOverDialog();
 			}
 			else {
 				newPoison();
@@ -268,11 +267,6 @@ class GameBoard  {
     
     private int getSnakeSize () {
         return snake.getSize();
-    }
-
-    private void exit () {
-        System.out.println("Final Score: " + getScore());
-        System.exit(0);
     }
 
     int getScore () {
@@ -305,7 +299,7 @@ class GameBoard  {
 		score -= 10;
 	}
 
-    void paint (Graphics graphics) {
+    public void paint (Graphics graphics) {
 
         Graphics2D g = (Graphics2D) graphics;
         g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
